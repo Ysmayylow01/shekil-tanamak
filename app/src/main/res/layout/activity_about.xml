@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="32dp">
+
+        <LinearLayout
+            android:id="@+id/backBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_glass"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"
+                android:scaleType="centerInside"
+                app:tint="#FFFFFF" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="About Us"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="16dp" />
+
+    </LinearLayout>
+
+    <!-- App Logo/Icon -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_camera"
+            android:scaleType="centerInside"
+            app:tint="#00D9FF" />
+
+    </LinearLayout>
+
+    <!-- App Name -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AI Vision"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Version -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="v1.0.0"
+        android:textSize="14sp"
+        android:textColor="#B0B8D4"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Description Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/glass_background"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hakyköy"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AI Vision, sesli komanda bilen real-time object detection uygulamasydyr. SSD MobileNet v1 modeli ulanyp, kameradan gelen suratlarda şahsy prediksiýa edip, detektlenen obýektleri saya alýarsynyz."
+            android:textSize="14sp"
+            android:textColor="#B0B8D4"
+            android:lineSpacingExtra="4dp" />
+
+    </LinearLayout>
+
+    <!-- Features Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/glass_background"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aýratynlyklar"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✓ Real-time camera detection\n✓ Sesli komanda desteği\n✓ Suratynyň analiz\n✓ Wideo işlemesi\n✓ Glassmorphism dizaýn"
+            android:textSize="13sp"
+            android:textColor="#B0B8D4"
+            android:lineSpacingExtra="6dp" />
+
+    </LinearLayout>
+
+    <!-- Credits Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/glass_background"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dörediji"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Merdan - AI  Mobile Developer"
+            android:textSize="13sp"
+            android:textColor="#B0B8D4"
+
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Oguz Han Engineering Technology University"
+            android:textSize="12sp"
+            android:textColor="#8892A8"
+         />
+
+    </LinearLayout>
+
+</LinearLayout>

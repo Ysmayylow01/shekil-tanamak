@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AI Vision"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Voice-Controlled Object Detection"
+            android:textSize="14sp"
+            android:textColor="#B0B8D4"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+    <!-- Camera Card -->
+    <LinearLayout
+        android:id="@+id/cameraCard"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/glass_background"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_camera"
+            android:scaleType="centerInside"
+            android:layout_marginEnd="16dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Real-Time Detection"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Live camera feed with AI detection"
+                android:textSize="12sp"
+                android:textColor="#B0B8D4"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:scaleType="centerInside"
+            app:tint="#FFFFFF" />
+
+    </LinearLayout>
+
+    <!-- Gallery Card -->
+    <LinearLayout
+        android:id="@+id/galleryCard"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/glass_background"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_gallery"
+            android:scaleType="centerInside"
+            android:layout_marginEnd="16dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gallery Detection"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detect objects in photos"
+                android:textSize="12sp"
+                android:textColor="#B0B8D4"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:scaleType="centerInside"
+            app:tint="#FFFFFF" />
+
+    </LinearLayout>
+
+    <!-- Video Card -->
+    <LinearLayout
+        android:id="@+id/videoCard"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/glass_background"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_video"
+            android:scaleType="centerInside"
+            android:layout_marginEnd="16dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Video Analysis"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Analyze video files"
+                android:textSize="12sp"
+                android:textColor="#B0B8D4"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:scaleType="centerInside"
+            app:tint="#FFFFFF" />
+
+    </LinearLayout>
+
+    <!-- About Card -->
+    <LinearLayout
+        android:id="@+id/aboutCard"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/glass_background"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_info"
+            android:scaleType="centerInside"
+            android:layout_marginEnd="16dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="About Us"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Learn more about the app"
+                android:textSize="12sp"
+                android:textColor="#B0B8D4"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:scaleType="centerInside"
+            app:tint="#FFFFFF" />
+
+    </LinearLayout>
+
+</LinearLayout>

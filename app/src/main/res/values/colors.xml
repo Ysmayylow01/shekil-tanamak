@@ -1,10 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Primary Colors -->
+    <color name="primary">#0D1B44</color>
+    <color name="primary_dark">#0A1535</color>
+    <color name="primary_light">#1A2F5F</color>
+
+    <!-- Secondary Colors -->
+    <color name="secondary">#00D9FF</color>
+    <color name="secondary_dark">#00A8CC</color>
+    <color name="secondary_light">#33FFFF</color>
+
+    <!-- Accent Colors -->
+    <color name="accent">#FF1493</color>
+    <color name="accent_dark">#C71585</color>
+
+    <!-- Neutral Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_light">#B0B8D4</color>
+    <color name="gray_dark">#6B7484</color>
+
+    <!-- Glass Colors -->
+    <color name="glass_light">#1A1F3A66</color>
+    <color name="glass_border">#FFFFFF33</color>
+    <color name="glass_button">#0D1B4499</color>
+
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#0D1B44</color>
+    <color name="gradient_mid">#1A2F5F</color>
+    <color name="gradient_end">#2D1B4F</color>
+
+    <!-- Status Colors -->
+    <color name="success">#00D973</color>
+    <color name="warning">#FFB800</color>
+    <color name="error">#FF3B30</color>
+
 </resources>

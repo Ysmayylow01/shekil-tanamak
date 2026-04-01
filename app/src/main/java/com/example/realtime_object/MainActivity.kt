@@ -2,46 +2,33 @@ package com.example.realtime_object
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
-import androidx.appcompat.app.AppCompatActivity
+import android.hardware.camera2.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.speech.RecognitionListener
 import android.view.Surface
 import android.view.TextureView
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.realtime_object.ml.SsdMobilenetV11Metadata1
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.support.common.FileUtil
-import androidx.activity.ComponentActivity
+import java.util.Locale
 
-/*import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+class MainActivity : AppCompatActivity() {
 
-
-import androidx.compose.foundation.Canvas
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.tooling.preview.Preview
-
-import com.example.realtime_object.ml.SsdMobilenetV11Metadata1
-import com.example.realtime_object.ui.theme.Realtime_objectTheme */
-
-
-class MainActivity : ComponentActivity() {
-
-    lateinit var labels:List<String>
+    lateinit var labels: List<String>
     var colors = listOf<Int>(
         Color.BLUE, Color.GREEN, Color.RED, Color.CYAN, Color.GRAY, Color.BLACK,
         Color.DKGRAY, Color.MAGENTA, Color.YELLOW, Color.RED
@@ -55,23 +42,34 @@ class MainActivity : ComponentActivity() {
     lateinit var cameraManager: CameraManager
     lateinit var textureView: TextureView
     lateinit var model: SsdMobilenetV11Metadata1
+    lateinit var speechRecognizer: SpeechRecognizer
+    lateinit var detectionTextView: TextView
+    var detectedObjects = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         get_permission()
 
+        // Initialize TensorFlow Lite model
         labels = FileUtil.loadLabels(this, "labels.txt")
-        imageProcessor = ImageProcessor.Builder().add(ResizeOp(300, 300, ResizeOp.ResizeMethod.BILINEAR)).build()
+        imageProcessor = ImageProcessor.Builder()
+            .add(ResizeOp(300, 300, ResizeOp.ResizeMethod.BILINEAR))
+            .build()
         model = SsdMobilenetV11Metadata1.newInstance(this)
+
+        // Initialize handler thread for camera
         val handlerThread = HandlerThread("videoThread")
         handlerThread.start()
         handler = Handler(handlerThread.looper)
 
+        // Initialize views
         imageView = findViewById(R.id.imageView)
-
+        detectionTextView = findViewById(R.id.detectionText)
         textureView = findViewById(R.id.textureView)
-        textureView.surfaceTextureListener = object:TextureView.SurfaceTextureListener{
+
+        // Setup TextureView listener
+        textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
             override fun onSurfaceTextureAvailable(
                 surface: SurfaceTexture,
                 width: Int,
@@ -84,92 +82,168 @@ class MainActivity : ComponentActivity() {
                 surface: SurfaceTexture,
                 width: Int,
                 height: Int
-            ) {
-
-            }
+            ) {}
 
             override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
                 return false
             }
 
             override fun onSurfaceTextureUpdated(p0: SurfaceTexture) {
-                bitmap = textureView.bitmap!!
-                var image = TensorImage.fromBitmap(bitmap)
-                image = imageProcessor.process(image)
+                try {
+                    bitmap = textureView.bitmap ?: return
+                    var image = TensorImage.fromBitmap(bitmap)
+                    image = imageProcessor.process(image)
 
-                val outputs = model.process(image)
-                val locations = outputs.locationsAsTensorBuffer.floatArray
-                val classes = outputs.classesAsTensorBuffer.floatArray
-                val scores = outputs.scoresAsTensorBuffer.floatArray
-                val numberOfDetections = outputs.numberOfDetectionsAsTensorBuffer.floatArray
+                    val outputs = model.process(image)
+                    val locations = outputs.locationsAsTensorBuffer.floatArray
+                    val classes = outputs.classesAsTensorBuffer.floatArray
+                    val scores = outputs.scoresAsTensorBuffer.floatArray
 
-                var mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-                val canvas = Canvas(mutable)
+                    var mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+                    val canvas = Canvas(mutable)
 
-                val h = mutable.height
-                val w = mutable.width
-                paint.textSize = h/15f
-                paint.strokeWidth = h/85f
-                var x = 0
-                scores.forEachIndexed { index, fl ->
-                    x = index
-                    x *= 4
-                    if(fl > 0.5){
-                        paint.setColor(colors.get(index))
-                        paint.style = Paint.Style.STROKE
-                        canvas.drawRect(RectF(locations.get(x+1)*w, locations.get(x)*h, locations.get(x+3)*w, locations.get(x+2)*h), paint)
-                        paint.style = Paint.Style.FILL
-                        canvas.drawText(labels.get(classes.get(index).toInt())+" "+fl.toString(), locations.get(x+1)*w, locations.get(x)*h, paint)
+                    val h = mutable.height
+                    val w = mutable.width
+                    paint.textSize = h / 15f
+                    paint.strokeWidth = h / 85f
+
+                    detectedObjects.clear()
+
+                    scores.forEachIndexed { index, fl ->
+                        if (fl > 0.5) {
+                            val classIdx = classes[index].toInt()
+                            val label = if (classIdx < labels.size) labels[classIdx] else "Unknown"
+                            detectedObjects.add("$label: ${String.format("%.1f%%", fl * 100)}")
+
+                            val x = index * 4
+                            paint.setColor(colors[index % colors.size])
+                            paint.style = Paint.Style.STROKE
+                            canvas.drawRect(
+                                RectF(
+                                    locations[x + 1] * w,
+                                    locations[x] * h,
+                                    locations[x + 3] * w,
+                                    locations[x + 2] * h
+                                ),
+                                paint
+                            )
+                            paint.style = Paint.Style.FILL
+                            canvas.drawText(
+                                "$label ${String.format("%.2f", fl)}",
+                                locations[x + 1] * w,
+                                locations[x] * h,
+                                paint
+                            )
+                        }
                     }
+
+                    imageView.setImageBitmap(mutable)
+                    updateDetectionText()
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
-                imageView.setImageBitmap(mutable)
-
             }
         }
 
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
+        // Initialize Speech Recognizer
+        initializeSpeechRecognizer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        model.close()
+    private fun initializeSpeechRecognizer() {
+        if (SpeechRecognizer.isRecognitionAvailable(this)) {
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+            speechRecognizer.setRecognitionListener(object : RecognitionListener {
+                override fun onReadyForSpeech(params: Bundle?) {}
+                override fun onBeginningOfSpeech() {}
+                override fun onRmsChanged(rmsdB: Float) {}
+                override fun onBufferReceived(buffer: ByteArray?) {}
+                override fun onEndOfSpeech() {}
+                override fun onError(error: Int) {}
+
+                override fun onResults(results: Bundle?) {
+                    val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    if (!matches.isNullOrEmpty()) {
+                        val spokenText = matches[0].lowercase(Locale.getDefault())
+                        announceDetectedObjects(spokenText)
+                    }
+                }
+
+                override fun onPartialResults(partialResults: Bundle?) {}
+                override fun onEvent(eventType: Int, params: Bundle?) {}
+            })
+        }
+    }
+
+    private fun updateDetectionText() {
+        runOnUiThread {
+            detectionTextView.text = if (detectedObjects.isNotEmpty()) {
+                "Tanalyan:\n" + detectedObjects.take(5).joinToString("\n")
+            } else {
+                "Objektler gözlenilmedi"
+            }
+        }
+    }
+
+    private fun announceDetectedObjects(voiceCommand: String) {
+        if (voiceCommand.contains("ayt") || voiceCommand.contains("ne")) {
+            val announcement = detectedObjects.take(3).joinToString(", ")
+            runOnUiThread {
+                detectionTextView.text = "Sesli: $announcement"
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
-    fun open_camera(){
-        cameraManager.openCamera(cameraManager.cameraIdList[0], object:CameraDevice.StateCallback(){
-            override fun onOpened(camera: CameraDevice) {
-                cameraDevice = camera
+    fun open_camera() {
+        cameraManager.openCamera(
+            cameraManager.cameraIdList[0],
+            object : CameraDevice.StateCallback() {
+                override fun onOpened(camera: CameraDevice) {
+                    cameraDevice = camera
 
-                var surfaceTexture = textureView.surfaceTexture
-                var surface = Surface(surfaceTexture)
+                    val surfaceTexture = textureView.surfaceTexture
+                    val surface = Surface(surfaceTexture)
 
-                var captureRequest = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
-                captureRequest.addTarget(surface)
+                    val captureRequest =
+                        cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+                    captureRequest.addTarget(surface)
 
-                cameraDevice.createCaptureSession(listOf(surface), object:  CameraCaptureSession.StateCallback(){
-                    override fun onConfigured(session: CameraCaptureSession) {
-                        session.setRepeatingRequest(captureRequest.build(), null, null)
-                    }
+                    cameraDevice.createCaptureSession(
+                        listOf(surface),
+                        object : CameraCaptureSession.StateCallback() {
+                            override fun onConfigured(session: CameraCaptureSession) {
+                                session.setRepeatingRequest(captureRequest.build(), null, null)
+                            }
 
-                    override fun onConfigureFailed(session: CameraCaptureSession) {
-                    }
-                }, handler)
-            }
+                            override fun onConfigureFailed(session: CameraCaptureSession) {}
+                        },
+                        handler
+                    )
+                }
 
-            override fun onDisconnected(camera: CameraDevice) {
-
-            }
-
-            override fun onError(camera: CameraDevice, error: Int) {
-            }
-        }, handler)
+                override fun onDisconnected(camera: CameraDevice) {}
+                override fun onError(camera: CameraDevice, error: Int) {}
+            },
+            handler
+        )
     }
 
-    fun get_permission(){
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 101)
+    fun startVoiceRecognition() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "tk_TM")
+        speechRecognizer.startListening(intent)
+    }
+
+    fun get_permission() {
+        val permissions = arrayOf(
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.RECORD_AUDIO
+        )
+        if (!permissions.all { ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED }) {
+            ActivityCompat.requestPermissions(this, permissions, 101)
         }
     }
 
@@ -179,25 +253,19 @@ class MainActivity : ComponentActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
             get_permission()
         }
     }
-}
 
-/*
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-            text = "Hello $name!",
-            modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Realtime_objectTheme {
-        Greeting("Android")
+    override fun onDestroy() {
+        super.onDestroy()
+        model.close()
+        if (::speechRecognizer.isInitialized) {
+            speechRecognizer.destroy()
+        }
+        if (::cameraDevice.isInitialized) {
+            cameraDevice.close()
+        }
     }
-}*/
+}

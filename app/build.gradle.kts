@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.realtime_object"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.realtime_object"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -60,6 +60,9 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
     implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.13.0")
+    implementation("androidx.activity:activity:1.13.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

@@ -1,21 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
     tools:context=".MainActivity">
 
+    <!-- Camera TextureView -->
     <TextureView
         android:id="@+id/textureView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- Detection Output ImageView -->
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000"
-        android:id="@+id/imageView"/>
+        android:scaleType="fitCenter" />
 
+    <!-- Glassmorphism Card - Detection Results -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/glass_background"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/detectionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Objektler gözlenilmedi"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Control Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:spacing="8dp">
+
+            <ImageButton
+                android:id="@+id/voiceBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/button_glass"
+                android:src="@drawable/ic_microphone"
+                android:scaleType="centerInside"
+                android:contentDescription="Voice Control" />
+
+            <ImageButton
+                android:id="@+id/galleryBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/button_glass"
+                android:src="@drawable/ic_gallery"
+                android:scaleType="centerInside"
+                android:contentDescription="Gallery" />
+
+            <ImageButton
+                android:id="@+id/aboutBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/button_glass"
+                android:src="@drawable/ic_info"
+                android:scaleType="centerInside"
+                android:contentDescription="About" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
