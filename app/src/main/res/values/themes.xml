@@ -1,5 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.Realtime_object" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.AIVision" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_blue</item>
+        <item name="colorPrimaryVariant">@color/primary_purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.AIVision.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+    <!-- ============================================ -->
+    <!-- DARK THEME - Gallery & Video Activity -->
+    <!-- ============================================ -->
+    <style name="Theme.AIVision.Dark" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary Colors -->
+        <item name="colorPrimary">@color/primary_blue</item>
+        <item name="colorPrimaryVariant">@color/primary_purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/primary_green</item>
+        <item name="colorSecondaryVariant">@color/primary_green</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Background Colors -->
+        <item name="android:colorBackground">@color/dark_background</item>
+        <item name="colorSurface">@color/dark_surface</item>
+        <item name="colorSurfaceVariant">@color/dark_surface_light</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/gray_text</item>
+
+        <!-- Status & Navigation Bar -->
+        <item name="android:statusBarColor">@color/dark_surface</item>
+        <item name="android:navigationBarColor">@color/dark_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+
+        <!-- Text Colors -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/gray_text</item>
+
+        <!-- Ripple Color -->
+        <item name="colorControlHighlight">@color/ripple_dark</item>
+
+        <!-- Button Styles -->
+        <item name="materialButtonStyle">@style/Widget.AIVision.Button.Dark</item>
+
+        <!-- Card Style -->
+        <item name="materialCardViewStyle">@style/Widget.AIVision.Card.Dark</item>
+    </style>
+
+    <!-- ============================================ -->
+    <!-- CUSTOM STYLES -->
+    <!-- ============================================ -->
+
+    <!-- Dark Button -->
+    <style name="Widget.AIVision.Button.Dark" parent="Widget.Material3.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/primary_blue</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Dark Outlined Button -->
+    <style name="Widget.AIVision.Button.Outlined.Dark" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/white</item>
+        <item name="strokeColor">@color/gray_text</item>
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <!-- Dark Card -->
+    <style name="Widget.AIVision.Card.Dark" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/dark_surface</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">8dp</item>
+    </style>
+
+    <!-- Toolbar Dark -->
+    <style name="Widget.AIVision.Toolbar.Dark" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/dark_surface</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="navigationIconTint">@color/white</item>
+    </style>
+
 </resources>

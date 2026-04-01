@@ -1,10 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- ============================================ -->
+    <!-- PRIMARY COLORS -->
+    <!-- ============================================ -->
+    <color name="primary_blue">#667eea</color>
+    <color name="primary_purple">#764ba2</color>
+    <color name="primary_green">#11998e</color>
+    <color name="primary_orange">#f093fb</color>
+    <color name="primary_red">#E53E3E</color>
+    <color name="primary_yellow">#ECC94B</color>
+
+    <!-- ============================================ -->
+    <!-- LIGHT THEME COLORS -->
+    <!-- ============================================ -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="dark_text">#2D3748</color>
+    <color name="gray_text">#A0AEC0</color>
+    <color name="light_gray">#E2E8F0</color>
+    <color name="background_light">#F7FAFC</color>
+
+    <!-- ============================================ -->
+    <!-- DARK THEME COLORS -->
+    <!-- ============================================ -->
+    <color name="dark_background">#0F1419</color>
+    <color name="dark_surface">#1A202C</color>
+    <color name="dark_surface_light">#2D3748</color>
+    <color name="dark_surface_lighter">#4A5568</color>
+    <color name="ripple_dark">#33FFFFFF</color>
+
+    <!-- ============================================ -->
+    <!-- DETECTION COLORS -->
+    <!-- ============================================ -->
+    <color name="detection_blue">#4299E1</color>
+    <color name="detection_green">#48BB78</color>
+    <color name="detection_red">#F56565</color>
+    <color name="detection_yellow">#ECC94B</color>
+    <color name="detection_purple">#9F7AEA</color>
+    <color name="detection_pink">#ED64A6</color>
+    <color name="detection_cyan">#38B2AC</color>
+    <color name="detection_orange">#ED8936</color>
+
 </resources>
