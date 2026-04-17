@@ -7,9 +7,11 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.os.*
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.view.Surface
 import android.view.TextureView
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import com.example.realtime_object.ml.SsdMobilenetV11Metadata1
@@ -18,6 +20,16 @@ import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import java.util.*
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import android.util.Base64
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -28,12 +40,16 @@ class MainActivity : ComponentActivity() {
     lateinit var handler: Handler
     lateinit var cameraManager: CameraManager
     lateinit var textureView: TextureView
+    lateinit var txt : TextView
     lateinit var model: SsdMobilenetV11Metadata1
+    val apiKey = "AIzaSyCmCcIh3eXzEdoqKEptVG9KQ9-K9afHnDY"
+    lateinit var api: GeminiApi
 
     lateinit var tts: TextToSpeech
     var isTtsReady = false
     var lastSpoken = ""
     var lastSpeakTime = 0L
+    var isSpeaking = false  // 🔴
 
     val paint = Paint()
     lateinit var bitmap: Bitmap
@@ -42,6 +58,15 @@ class MainActivity : ComponentActivity() {
         Color.GRAY, Color.BLACK, Color.DKGRAY,
         Color.MAGENTA, Color.YELLOW, Color.RED
     )
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY // Full body log
+    }
+    val client = OkHttpClient.Builder()
+        .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS) // serwer bilen baglanyşyk wagty
+        .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)    // jogap okamak üçin wagty
+        .writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)   // request ibermek üçin wagty
+        .addInterceptor(loggingInterceptor)
+        .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +74,43 @@ class MainActivity : ComponentActivity() {
 
         get_permission()
 
-        // 🔊 TTS
+        // 🔊 TTS - UtteranceProgressListener qosh
         tts = TextToSpeech(this) {
             if (it == TextToSpeech.SUCCESS) {
                 tts.language = Locale.US
                 isTtsReady = true
+
+                // 🔴 TTS tamamlanmagyny ushmaly
+                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) {
+                        isSpeaking = true
+                    }
+
+                    override fun onDone(utteranceId: String?) {
+                        // 🟢 TTS tamamlandan soň texti arassala
+                        isSpeaking = false
+                        Handler(Looper.getMainLooper()).post {
+                            txt.text = ""
+                        }
+                    }
+
+                    override fun onError(utteranceId: String?) {
+                        isSpeaking = false
+                        Handler(Looper.getMainLooper()).post {
+                            txt.text = ""
+                        }
+                    }
+                })
             }
         }
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://generativelanguage.googleapis.com/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        api = retrofit.create(GeminiApi::class.java)
 
         labels = FileUtil.loadLabels(this, "labels.txt")
 
@@ -71,7 +126,19 @@ class MainActivity : ComponentActivity() {
 
         imageView = findViewById(R.id.imageView)
         textureView = findViewById(R.id.textureView)
+        txt = findViewById(R.id.txtView)
+        textureView.setOnClickListener {
 
+            val now = System.currentTimeMillis()
+
+            // ⛔ 3 sekunt geçmedik bolsa işlemesin
+            if (now - lastSpeakTime < 3000) return@setOnClickListener
+
+            lastSpeakTime = now
+
+            val bitmap = textureView.bitmap ?: return@setOnClickListener
+            sendToGemini(bitmap)
+        }
         textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
 
             override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
@@ -86,9 +153,9 @@ class MainActivity : ComponentActivity() {
 
             override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
 
-           //     val original = textureView.bitmap ?: return
+                //     val original = textureView.bitmap ?: return
                 val original = textureView.bitmap!!
-                 bitmap = Bitmap.createScaledBitmap(original, 300, 300, true)
+                bitmap = Bitmap.createScaledBitmap(original, 300, 300, true)
                 // 🧠 AI input (NO DISTORTION)
                 var image = TensorImage.fromBitmap(bitmap)
                 image = imageProcessor.process(image)
@@ -128,15 +195,6 @@ class MainActivity : ComponentActivity() {
                         paint.style = Paint.Style.FILL
                         canvas.drawText("$label ${"%.2f".format(score)}", left, top, paint)
 
-                        // 🔊 SPEAK (anti-spam)
-                        if (isTtsReady &&
-                            label != lastSpoken &&
-                            System.currentTimeMillis() - lastSpeakTime > 2000
-                        ) {
-                            speak(label)
-                            lastSpoken = label
-                            lastSpeakTime = System.currentTimeMillis()
-                        }
                     }
                 }
 
@@ -146,10 +204,66 @@ class MainActivity : ComponentActivity() {
 
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
     }
+    fun bitmapToBase64(bitmap: Bitmap): String {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        val bytes = stream.toByteArray()
+        return Base64.encodeToString(bytes, Base64.NO_WRAP)
+    }
+    fun sendToGemini(bitmap: Bitmap) {
+
+        lifecycleScope.launch {
+
+            try {
+                val base64 = bitmapToBase64(bitmap)
+
+                val request = GeminiRequest(
+                    contents = listOf(
+                        Content(
+                            parts = listOf(
+                                Part(text = "What is in this image? Give a brief explanation in English."),
+                                Part(
+                                    inline_data = InlineData(
+                                        mime_type = "image/jpeg",
+                                        data = base64
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+
+                val response = api.generateContent(apiKey, request)
+
+                val text = response.candidates
+                    ?.firstOrNull()
+                    ?.content
+                    ?.parts
+                    ?.firstOrNull()
+                    ?.text ?: "Jogap ýok"
+
+                txt.text = text
+                speak(text)
+
+                // 🔴 3 sekunt sonra arassala degul, TTS tamamlananda arassala
+                // Handler(Looper.getMainLooper()).postDelayed({
+                //     txt.text = ""
+                // }, 3000)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun speak(text: String) {
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+        // 🔴 Utterance ID qosh - progress listener görüş üçin
+        val params = Bundle()
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "gemini_response")
+
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,null)
     }
+
     fun configureTransform(viewWidth: Int, viewHeight: Int) {
         val matrix = Matrix()
 
