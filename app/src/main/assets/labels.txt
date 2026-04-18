@@ -1,35 +1,35 @@
-adam
-welosiped
-maşyn
-motor
-uçar
-awtobus
-otly
+person
+bicycle
+car
+motorcycle
+airplane
+bus
+train
 truck
 boat
-swetofor
+traffic light
 fire hydrant
 ???
 stop sign
 parking meter
 bench
-guş
-pişik
-it
-at
+bird
+cat
+dog
+horse
 sheep
 cow
 elephant
-aýy
+bear
 zebra
 giraffe
 ???
 backpack
-saýawan
+umbrella
 ???
 ???
 handbag
-galstuk
+tie
 suitcase
 frisbee
 skis
@@ -41,39 +41,39 @@ baseball glove
 skateboard
 surfboard
 tennis racket
-çüýşe
+bottle
 ???
 wine glass
-bokal
+cup
 fork
-pyçak
+knife
 spoon
 bowl
-banan
-alma
+banana
+apple
 sandwich
-pyrtykal
+orange
 broccoli
 carrot
 hot dog
 pizza
 donut
-tort
-oturgyç
+cake
+chair
 couch
 potted plant
-spalny
+bed
 ???
 dining table
 ???
 ???
-hajathana
+toilet
 ???
-telewizor
-noutbook
-syçan
+tv
+laptop
+mouse
 remote
-klawitura
+keyboard
 cell phone
 microwave
 oven
@@ -81,7 +81,7 @@ toaster
 sink
 refrigerator
 ???
-kitap
+book
 clock
 vase
 scissors
